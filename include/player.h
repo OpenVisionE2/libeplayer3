@@ -27,6 +27,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libswresample/swresample.h>
 #include <libavutil/opt.h>
+#include <libavcodec/avcodec.h>
 }
 
 #include <stdint.h>
@@ -52,6 +53,7 @@ class Player {
 	friend class Output;
 	friend class Manager;
 	friend class eServiceLibpl;
+	friend class eServiceEPlayer3;
 	friend class WriterPCM;
 	friend int interrupt_cb(void *arg);
 

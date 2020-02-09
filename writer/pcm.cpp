@@ -143,8 +143,10 @@ bool WriterPCM::prepareClipPlay()
 		case 16:
 			break;
 		default:
-			printf("inappropriate bits per sample (%d) - must be 16 or 24\n", uBitsPerSample);
+		{
+			printf("[libeplayer3] inappropriate bits per sample (%d) - must be 16 or 24\n", uBitsPerSample);
 			return false;
+		}
 	}
 
 	return true;
@@ -252,18 +254,20 @@ bool WriterPCM::Write(AVPacket *packet, int64_t pts)
 		}
 
 		AVCodec *codec = avcodec_find_decoder(stream->codecpar->codec_id);
-		if (!codec) {
-			fprintf(stderr, "%s %d: avcodec_find_decoder(%llx)\n", __func__, __LINE__, (unsigned long long) stream->codecpar->codec_id);
+		if (!codec)
+		{
+			fprintf(stderr, "[libeplayer3] %s %d: avcodec_find_decoder(%llx)\n", __func__, __LINE__, (unsigned long long) stream->codecpar->codec_id);
 			return false;
 		}
 		avcodec_close(avctx);
-		if (avcodec_open2(avctx, codec, NULL)) {
-			fprintf(stderr, "%s %d: avcodec_open2 failed\n", __func__, __LINE__);
+		if (avcodec_open2(avctx, codec, NULL))
+		{
+			fprintf(stderr, "[libeplayer3] %s %d: avcodec_open2 failed\n", __func__, __LINE__);
 			return false;
 		}
 	}
-
-	if (!swr) {
+	if (!swr)
+	{
 		int in_rate = avctx->sample_rate;
 		// rates in descending order
 		int rates[] = {192000, 176400, 96000, 88200, 48000, 44100, 0};
@@ -290,8 +294,9 @@ bool WriterPCM::Write(AVPacket *packet, int64_t pts)
 		uBitsPerSample = 16;
 
 		swr = swr_alloc();
-		if (!swr) {
-			fprintf(stderr, "%s %d: swr_alloc failed\n", __func__, __LINE__);
+		if (!swr)
+		{
+			fprintf(stderr, "[libeplayer3] %s %d: swr_alloc failed\n", __func__, __LINE__);
 			return false;
 		}
 		av_opt_set_int(swr, "in_channel_layout", avctx->channel_layout, 0);
@@ -302,8 +307,9 @@ bool WriterPCM::Write(AVPacket *packet, int64_t pts)
 		av_opt_set_sample_fmt(swr, "out_sample_fmt", AV_SAMPLE_FMT_S16, 0);
 
 		int e = swr_init(swr);
-		if (e < 0) {
-			fprintf(stderr, "swr_init: %d (icl=%d ocl=%d isr=%d osr=%d isf=%d osf=%d)\n",
+		if (e < 0)
+		{
+			fprintf(stderr, "[libeplayer3] swr_init: %d (icl=%d ocl=%d isr=%d osr=%d isf=%d osf=%d)\n",
 				-e, (int) avctx->channel_layout,
 				(int) out_channel_layout, avctx->sample_rate, out_sample_rate, avctx->sample_fmt, AV_SAMPLE_FMT_S16);
 			restart_audio_resampling = true;
@@ -317,7 +323,7 @@ bool WriterPCM::Write(AVPacket *packet, int64_t pts)
 
 		if (!decoded_frame) {
 			if (!(decoded_frame = av_frame_alloc())) {
-				fprintf(stderr, "out of memory\n");
+				fprintf(stderr, "[libeplayer3] out of memory\n");
 				exit(1);
 			}
 		} else
@@ -349,7 +355,7 @@ bool WriterPCM::Write(AVPacket *packet, int64_t pts)
 				av_freep(&output);
 			int e = av_samples_alloc(&output, NULL, out_channels, out_samples, AV_SAMPLE_FMT_S16, 1);
 			if (e < 0) {
-				fprintf(stderr, "av_samples_alloc: %d\n", -e);
+				fprintf(stderr, "[libeplayer3] av_samples_alloc: %d\n", -e);
 				break;
 			}
 			out_samples_max = out_samples;

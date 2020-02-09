@@ -112,8 +112,9 @@ bool WriterH264::Write(AVPacket *packet, int64_t pts)
 		}
 
 		if (avcCHeader->Version != 1)
-			fprintf(stderr, "Error unknown avcC version (%x). Expect problems.\n", avcCHeader->Version);
-
+		{
+			fprintf(stderr, "[libeplayer3] Error: unknown avcC version (%x). Expect problems.\n", avcCHeader->Version);
+		}
 		// The player will use FrameRate and TimeScale to calculate the default frame rate.
 		// FIXME: TimeDelta should be used instead of FrameRate. This is a historic implementation bug.
 		// Reference:  player/frame_parser/frame_parser_video_h264.cpp FrameParser_VideoH264_c::ReadPlayer2ContainerParameters()
@@ -224,9 +225,9 @@ bool WriterH264::Write(AVPacket *packet, int64_t pts)
 				len |= *d;
 				d++;
 		}
-
-		if (d + len > de) {
-			fprintf(stderr, "NAL length past end of buffer - size %u frame offset %d left %d\n", len, (int) (d - packet->data), (int) (de - d));
+		if (d + len > de)
+		{
+			fprintf(stderr, "[libeplayer3] NAL length past end of buffer - size %u frame offset %d left %d\n", len, (int) (d - packet->data), (int) (de - d));
 			break;
 		}
 

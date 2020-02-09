@@ -20,5 +20,5 @@ libeplayer3_la_SOURCES = \
 # writer/h264.cpp
 # writer/h263.cpp writer/vc1.cpp writer/pcm.cpp writer/aac.cpp
 
-libeplayer3_la_LIBADD = -lavformat -lavcodec -lavutil -lswresample
+libeplayer3_la_LIBADD = -lavformat -lavcodec -lavutil -lswresample -lpthread -lswscale
 

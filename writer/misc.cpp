@@ -38,8 +38,10 @@ void PutBits(BitPacker_t * ld, unsigned int code, unsigned int length)
 
 #ifdef DEBUG_PUTBITS
 	if (ld->debug)
-		dprintf("code = %d, length = %d, bit_buf = 0x%x, bit_left = %d\n",
+	{
+		dprintf("[libeplayer3] code = %d, length = %d, bit_buf = 0x%x, bit_left = %d\n",
 			code, length, bit_buf, bit_left);
+	}
 #endif
 
 	if (length < bit_left) {

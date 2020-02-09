@@ -43,6 +43,9 @@
 #include "misc.h"
 #include "pes.h"
 
+#include <avcodec.h>
+#include <avformat.h>
+
 static const char *FILENAME = "eplayer/output.cpp";
 
 /* Send message to enigma2 */

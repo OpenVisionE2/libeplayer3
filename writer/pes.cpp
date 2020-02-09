@@ -53,9 +53,12 @@ int InsertPesHeader(uint8_t *data, int size, uint8_t stream_id, int64_t pts, int
 {
 	BitPacker_t ld2 = { data, 0, 32 };
 
-	///if (size > MAX_PES_PACKET_SIZE)
-		///size = 0;		// unbounded
-
+#if 0
+	if (size > MAX_PES_PACKET_SIZE)
+	{
+		size = 0;		// unbounded
+	}
+#endif
 	PutBits(&ld2, 0x0, 8);
 	PutBits(&ld2, 0x0, 8);
 	PutBits(&ld2, 0x1, 8);	// Start Code

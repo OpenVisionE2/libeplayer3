@@ -31,16 +31,18 @@
 
 #include "player.h"
 #include "misc.h"
+#include <avcodec.h>
+#include <avformat.h>
 
 static const char *FILENAME = "eplayer/input.cpp";
 
-#define averror(_err,_fun) ({										\
-	if (_err < 0) {											\
-		char _error[512];									\
-		av_strerror(_err, _error, sizeof(_error));						\
-		fprintf(stderr, "%s %d: %s: %d (%s)\n", FILENAME, __LINE__, #_fun, _err, _error);	\
-	}												\
-	_err;												\
+#define averror(_err,_fun) ({                                                                 \
+	if (_err < 0) {                                                                           \
+		char _error[512];                                                                     \
+		av_strerror(_err, _error, sizeof(_error));                                            \
+		fprintf(stderr, "[input.cpp] line %d: %s: %d (%s)\n", __LINE__, #_fun, _err, _error); \
+	}                                                                                         \
+	_err;                                                                                     \
 })
 
 Input::Input()
@@ -83,7 +85,9 @@ static void log_callback(void *ptr __attribute__ ((unused)), int lvl __attribute
 	if (sizeof(m) - 1 > (unsigned int) vsnprintf(m, sizeof(m), format, ap)) {
 		if (lastlog_message.compare(m) || lastlog_repeats > 999) {
 			if (lastlog_repeats)
-				fprintf(stderr, "last message repeated %u times\n", lastlog_repeats);
+			{
+					fprintf(stderr, "[input.cpp] last message repeated %u times\n", lastlog_repeats);
+			}
 			lastlog_message = m;
 			lastlog_repeats = 0;
 			fprintf(stderr, "%s", m);
@@ -243,7 +247,9 @@ bool Input::Play()
 	Player *player = (Player *) arg;
 	bool res = player->input.abortPlayback || player->abortRequested;
 	if (res)
-		fprintf(stderr, "%s %s %d: abort requested (%d/%d)\n", FILENAME, __func__, __LINE__, player->input.abortPlayback, player->abortRequested);
+	{
+		fprintf(stderr, "[input.cpp] %s line %d: abort requested (%d/%d)\n", __func__, __LINE__, player->input.abortPlayback, player->abortRequested);
+	}
 	return res;
 }
 

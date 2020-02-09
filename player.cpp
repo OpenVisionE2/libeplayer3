@@ -139,9 +139,10 @@ bool Player::Play()
 				}
 			}
 		}
-
-	} else {
-		fprintf(stderr,"playback already running\n");
+	}
+	else
+	{
+		fprintf(stderr,"[player.cpp] playback already running\n");
 		ret = false;
 	}
 	return ret;
@@ -216,17 +217,18 @@ bool Player::Stop()
 
 		output.Stop();
 		input.Stop();
-
-	} else {
-		fprintf(stderr,"stop not possible\n");
+	}
+	else
+	{
+		fprintf(stderr,"[player.cpp] stop not possible\n");
 		ret = false;
 	}
 
 	while (hasThreadStarted && (--wait_time) > 0)
 		usleep(100000);
-
-	if (wait_time == 0) {
-		fprintf(stderr,"timeout waiting for thread stop\n");
+	if (wait_time == 0)
+	{
+		fprintf(stderr,"[player.cpp] timeout waiting for thread stop\n");
 		ret = false;
 	}
 
@@ -236,18 +238,21 @@ bool Player::Stop()
 int Player::FastForward(int speed)
 {
 	/* Audio only forwarding not supported */
-	if (input.videoTrack && !isHttp && !isBackWard && (!isPaused ||  isPlaying)) {
-
-		if ((speed <= 0) || (speed > cMaxSpeed_ff)) {
-			fprintf(stderr, "speed %d out of range (1 - %d) \n", speed, cMaxSpeed_ff);
+	if (input.videoTrack && !isHttp && !isBackWard && (!isPaused ||  isPlaying))
+	{
+		if ((speed <= 0) || (speed > cMaxSpeed_ff))
+		{
+			fprintf(stderr, "[player.cpp] speed %d out of range (1 - %d) \n", speed, cMaxSpeed_ff);
 			return -1;
 		}
 
 		isForwarding = 1;
 		Speed = speed;
 		output.FastForward(speed);
-	} else {
-		fprintf(stderr,"fast forward not possible\n");
+	}
+	else
+	{
+		fprintf(stderr,"[player.cpp] fast forward not possible\n");
 		return -1;
 	}
 
@@ -259,10 +264,11 @@ int Player::FastBackward(int speed)
 	int ret = 0;
 
 	/* Audio only reverse play not supported */
-	if (input.videoTrack && !isForwarding && (!isPaused || isPlaying)) {
-
-		if ((speed > 0) || (speed < cMaxSpeed_fr)) {
-			fprintf(stderr, "speed %d out of range (0 - %d) \n", speed, cMaxSpeed_fr);
+	if (input.videoTrack && !isForwarding && (!isPaused || isPlaying))
+	{
+		if ((speed > 0) || (speed < cMaxSpeed_fr))
+		{
+			fprintf(stderr, "[player.cpp] speed %d out of range (0 - %d) \n", speed, cMaxSpeed_fr);
 			return -1;
 		}
 
@@ -283,8 +289,10 @@ int Player::FastBackward(int speed)
 			ret = -1;
 		}
 #endif
-	} else {
-		fprintf(stderr,"fast backward not possible\n");
+	}
+	else
+	{
+		fprintf(stderr,"[player.cpp] fast backward not possible\n");
 		ret = -1;
 	}
 
@@ -313,7 +321,7 @@ bool Player::SlowMotion(int repeats)
 		output.SlowMotion(repeats);
 		return true;
 	}
-	fprintf(stderr, "slowmotion not possible\n");
+	fprintf(stderr, "[player.cpp] slowmotion not possible\n");
 	return false;
 }
 

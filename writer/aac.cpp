@@ -119,9 +119,9 @@ void WriterAAC::Init(int _fd, Track *_track, Player *_player)
 		chan_config = (stream->codecpar->extradata[1] >> 3) && 0xf;
 	}
 #if AAC_DEBUG
-	printf("aac object_type %d\n", object_type);
-	printf("aac sample_index %d\n", sample_index);
-	printf("aac chan_config %d\n", chan_config);
+	printf("[libeplayer3] aac object_type %d\n", object_type);
+	printf("[libeplayer3] aac sample_index %d\n", sample_index);
+	printf("[libeplayer3] aac chan_config %d\n", chan_config);
 #endif
 	object_type -= 1;	// Cause of ADTS
 	aacbuflen = AAC_HEADER_LENGTH;
