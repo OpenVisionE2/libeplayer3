@@ -32,6 +32,8 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libswresample/swresample.h>
 #include <libavutil/opt.h>
+#include <libavcodec/bsf.h>
+#include <libavcodec/avcodec.h>
 }
 
 #include "libthread.h"

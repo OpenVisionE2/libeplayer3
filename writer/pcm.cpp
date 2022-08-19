@@ -253,7 +253,7 @@ bool WriterPCM::Write(AVPacket *packet, int64_t pts)
 			decoded_frame = NULL;
 		}
 
-		AVCodec *codec = avcodec_find_decoder(stream->codecpar->codec_id);
+		AVCodec *codec = (AVCodec*)avcodec_find_decoder(stream->codecpar->codec_id);
 		if (!codec)
 		{
 			fprintf(stderr, "[libeplayer3] %s %d: avcodec_find_decoder(%llx)\n", __func__, __LINE__, (unsigned long long) stream->codecpar->codec_id);
@@ -346,7 +346,7 @@ bool WriterPCM::Write(AVPacket *packet, int64_t pts)
 				continue;
 		}
 
-		pts = player->input.calcPts(stream, av_frame_get_best_effort_timestamp(decoded_frame));
+		pts = player->input.calcPts(stream, decoded_frame->best_effort_timestamp);
 
 		int in_samples = decoded_frame->nb_samples;
 		int out_samples = av_rescale_rnd(swr_get_delay(swr, avctx->sample_rate) + in_samples, out_sample_rate, avctx->sample_rate, AV_ROUND_UP);

@@ -253,32 +253,10 @@ bool Input::Play()
 	return res;
 }
 
-static int lock_callback(void **mutex, enum AVLockOp op)
-{
-	switch (op) {
-		case AV_LOCK_CREATE:
-			*mutex = (void *) new Mutex;
-			return !*mutex;
-		case AV_LOCK_DESTROY:
-			delete static_cast<Mutex *>(*mutex);
-			*mutex = NULL;
-			return 0;
-		case AV_LOCK_OBTAIN:
-			static_cast<Mutex *>(*mutex)->lock();
-			return 0;
-		case AV_LOCK_RELEASE:
-			static_cast<Mutex *>(*mutex)->unlock();
-			return 0;
-		default:
-			return -1;
-	}
-}
-
 bool Input::Init(const char *filename, std::string headers)
 {
 	bool noprobe = true;
 	abortPlayback = false;
-	av_lockmgr_register(lock_callback);
 #if ENABLE_LOGGING
 	av_log_set_flags(AV_LOG_SKIP_REPEATED);
 	av_log_set_level(AV_LOG_INFO);
@@ -304,7 +282,6 @@ bool Input::Init(const char *filename, std::string headers)
 		fprintf(stderr, "%s %s %d: %s\n", FILENAME, __func__, __LINE__, filename);
 	}
 
-	av_register_all();
 	avformat_network_init();
 
 	videoTrack = NULL;
@@ -346,7 +323,8 @@ again:
 		return false;
 	}
 
-	avfc->iformat->flags |= AVFMT_SEEK_TO_PTS;
+	//ffmpeg5: error: assignment of member 'flags' in read-only object -> so commented out next line
+	//avfc->iformat->flags |= AVFMT_SEEK_TO_PTS;
 
 	if (player->isHttp && noprobe)
 		avfc->max_analyze_duration = 1 * AV_TIME_BASE;
@@ -412,8 +390,8 @@ bool Input::UpdateTracks()
 			avcodec_free_context(&avctx);
 			continue;
 		}
-		av_codec_set_pkt_timebase(avctx, stream->time_base);
-
+		avctx->pkt_timebase=stream->time_base;
+		
 		Track track;
 		track.stream = stream;
 		track.avctx = avctx;
